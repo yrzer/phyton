@@ -27,7 +27,7 @@ a=int(input())
 b=int(input())
 c=int(input())
 
-delta = lambda a, b, c:(+b+)-4*a*c
+delta = lambda a, b, c:(b*b)-4*a*c
 print(delta(2,2,2))
 print(math.sqrt(delta(2,2,2)))
 
