@@ -10,6 +10,12 @@ print(MyFilms)
 MyHobby = MyGames + MyFilms
 print(MyHobby)
 
+print("------------------")
+
+txt = " Hello World "
+x = txt.strip()
+y = txt.replace("H", "J")
+print(y+" "+x)
 
 print("------------------")
 
