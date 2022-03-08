@@ -34,15 +34,15 @@ b=int(input())
 c=int(input())
 
 delta = lambda a, b, c:(b*b)-4*a*c
-print(delta(2,2,2))
-print(math.sqrt(delta(2,2,2)))
+print(delta(a,b,c))
+print(math.sqrt(delta(a,b,c)))
 
 print("------------------")
 
 for x in range(10):
     def silnia(n):
         if n <= 1:
-            return 1;
+            return 1
         else:
             return n * silnia(n - 1)
 

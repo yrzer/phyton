@@ -1,18 +1,27 @@
-def kula()
-
-def szescian()
-
-def prostopadloscian()
+import math
+def kula():
+    print("podaj promien")
+    r=int(input())
+    print( (4/3)*math.pi*(r*r*r))
+def szescian():
+    print("podaj bok")
+    a=int(input())
+    print( a*a*a)
+def prostopadloscian():
+    print("podaj bok a,b,c")
+    a=int(input())
+    b=int(input())
+    c=int(input())
+    print( a*b*c)
 
 print("1:kula | 2:szescian | 3:prostopadloscian")
 s = input()
-
 match int(s):
     case 1:
-        print("OK")
+        kula()
     case 2:
-        print("Not Found")
+        szescian()
     case 3:
-        print("I'm a teapot")
+        prostopadloscian()
     case _:
-        print("Code not found")
+        print("error")
