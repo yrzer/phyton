@@ -40,9 +40,10 @@ dino_rY = 275
 G = [1,1,2,2,2,3,3,3,3,4,4,4,4,4,5,5,5,5,6,6,6,6,6,6,7,7,7,8,8,8,9]
 G.reverse()
 kaktusX = 700
+end = False
 
-while True:
-    #czas
+def czas():
+    global clock, delta, sekunda, do_10, do_100
     clock.tick(60) # jeszcze zrobie lepsze ?
     delta += 1
     if(delta == 60):
@@ -54,6 +55,52 @@ while True:
             do_100+=1
             if(do_100==10):
                 do_100=0
+
+def rysowanie():
+    global backlineX, kaktusX, w_dino_r, end
+    #licznik
+    win.blit(liczby[do_10], (610, 10))
+    win.blit(liczby[do_100], (600, 10))
+    
+    #tło
+    backlineX -= 5
+    if(backlineX < -1200): backlineX=0
+    if(backlineX < -560): win.blit(backline, (backlineX+1200, 315))
+    win.blit(backline, (backlineX, 315))
+    
+    #random kaktus
+    kaktusX -= 5
+    if(kaktusX <-10):
+        kaktusX = 700
+    win.blit(kaktus, (kaktusX, 272)) # 25x50
+
+    #dino
+    if(delta%6==0):
+        w_dino_r +=1
+        if(w_dino_r==2):
+            w_dino_r=0
+    win.blit(dino_r[w_dino_r], (30, dino_rY)) # 44 x 46
+    
+    # kolsizja kaktus i dino
+    if (kaktusX > 28 and kaktusX < 52) and (dino_rY < 277 and dino_rY > 238):
+       end = True # print("kolizja")  ekran końcowy
+    else:
+       end = False
+
+def end_game():
+    global end
+    win.blit(game_over, (220, 140))
+    # scoreboard
+    win.blit(restart, (300, 180))
+    if ((mouse_x, mouse_y) > (300,180) and (mouse_x, mouse_y) < (336,212)) and pygame.mouse.get_pressed()[0]:
+        # ekarn startowy
+        end = False # print("restart game")
+    
+
+while True:
+    # if start restet czas i takie tam
+    #czas
+    czas()
     #czas
     
     for event in pygame.event.get():
@@ -63,6 +110,14 @@ while True:
         # skakanie
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             spacja= True
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            spacja= True
+    
+    """
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+    """
+    mouse_x, mouse_y = pygame.mouse.get_pos()
     
     #skakanie
     if spacja==True :
@@ -80,41 +135,30 @@ while True:
         
         
     
-    win.fill((0,0,0))
-    #rysowanie
-    
-    #licznik
-    win.blit(liczby[do_10], (610, 10))
-    win.blit(liczby[do_100], (600, 10))
-    
-    #tło
-    backlineX -= 5
-    if(backlineX<-1200): backlineX=0
-    if(backlineX<-560):  win.blit(backline, (backlineX+1200, 315))
-    win.blit(backline, (backlineX, 315))
-    
-    #random kaktus
-    kaktusX -= 5
-    if(kaktusX <-10):
-        kaktusX = 700
-    win.blit(kaktus, (kaktusX, 272)) # 25x50
-
-    #dino
-    if(delta%6==0):
-        w_dino_r +=1
-        if(w_dino_r==2):
-            w_dino_r=0
-    win.blit(dino_r[w_dino_r], (30, dino_rY)) # 44 x 46
-    
-    #kolsizja kaktus i dino
-    if (kaktusX > 28 and kaktusX < 52) and (dino_rY < 277 and dino_rY > 238):
-       pass# print("kolizja")  ekran końcowy
-    
-    #print(kaktusX, dino_rY)
+    win.fill((0,0,0)) #rysowanie  
+    if end == True: end_game()
+    else: rysowanie()
     
     
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-    #print(mouse_x, mouse_y)
+    # print(mouse_x, mouse_y)
     
     pygame.display.update()
     pygame.display.flip()
+
+
+"""
+import mysql.connector
+
+config = {
+  'user': 'scott',
+  'password': 'password',
+  'host': '127.0.0.1',
+  'database': 'employees',
+  'raise_on_warnings': True
+}
+
+cnx = mysql.connector.connect(**config)
+
+cnx.close()
+
+"""
