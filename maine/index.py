@@ -1,3 +1,4 @@
+from cmath import log10
 import pygame
 import sys
 import os
@@ -9,7 +10,8 @@ win = pygame.display.set_mode((1920/3,1080/3)) # 1920 × 1080
 pygame.display.set_caption("dino adventures")
 
 path = "maine\dino\\"
-dino = pygame.image.load(path+'dino-stand.png')
+dino = pygame.image.load(path+'dino-stand.png') 
+dino_m = pygame.image.load(path+'dino-stand_mrug.png')
 restart = pygame.image.load(path+'restart.png')
 game_over = pygame.image.load(path+'game_over.png')
 chmura = pygame.image.load(path+'chmura.png')
@@ -28,10 +30,12 @@ liczby.append(pygame.image.load(path+'I.png'))
 kaktus = pygame.image.load(path+'kaktus1.png')
 
 clock = pygame.time.Clock()
+
 delta = 0
 sekunda = 0
 do_10 = 0
 do_100 = 0
+do_1000 = 0
 backlineX = 5
 w_dino_r = 0
 spacja = False
@@ -41,6 +45,44 @@ G = [1,1,2,2,2,3,3,3,3,4,4,4,4,4,5,5,5,5,6,6,6,6,6,6,7,7,7,8,8,8,9]
 G.reverse()
 kaktusX = 700
 end = False
+if_start = True
+start_p = True
+end_l = False
+
+def start():
+    global delta, sekunda, do_10, do_100,do_1000, backlineX, w_dino_r, spacja, delta_v2, dino_rY, G, kaktusX, end, if_start, start_p, end_l
+    if start_p == True:
+        delta = 0
+        sekunda = 0
+        do_10 = 0
+        do_100 = 0
+        do_1000 = 0
+        backlineX = 5
+        w_dino_r = 0
+        spacja = False
+        delta_v2 =0
+        dino_rY = 275
+        kaktusX = 700
+        end = False
+        if_start = True
+        start_p = False
+        end_l = False
+    
+    win.blit(backline, (backlineX, 315))
+    win.blit(dino, (30, dino_rY)) 
+    
+    if sekunda%5 == 0:
+        win.blit(dino_m, (30, dino_rY)) 
+    
+    if spacja==True:
+        sekunda = 0
+        delta = 0
+        do_10 = 0
+        do_100 = 0
+        do_1000 = 0
+        if_start = False
+    
+
 
 def czas():
     global clock, delta, sekunda, do_10, do_100
@@ -55,12 +97,16 @@ def czas():
             do_100+=1
             if(do_100==10):
                 do_100=0
+                do_1000+=1
+                if(do_1000==10):
+                    do_1000=0
 
 def rysowanie():
     global backlineX, kaktusX, w_dino_r, end
     #licznik
     win.blit(liczby[do_10], (610, 10))
     win.blit(liczby[do_100], (600, 10))
+    win.blit(liczby[do_1000], (590, 10))
     
     #tło
     backlineX -= 5
@@ -88,13 +134,25 @@ def rysowanie():
        end = False
 
 def end_game():
-    global end
+    global end, if_start, start_p, end_l, l1,l2,l3
     win.blit(game_over, (220, 140))
     # scoreboard
+    l = 323
+    if end_l == False:
+        l1 = do_10
+        l2 = do_100
+        l3 = do_1000
+        end_l = True
+    win.blit(liczby[l1], (l, 220))
+    win.blit(liczby[l2], (l-10, 220))
+    win.blit(liczby[l3], (l-20, 220))
+    
     win.blit(restart, (300, 180))
     if ((mouse_x, mouse_y) > (300,180) and (mouse_x, mouse_y) < (336,212)) and pygame.mouse.get_pressed()[0]:
         # ekarn startowy
         end = False # print("restart game")
+        if_start = True
+        start_p = True
     
 
 while True:
@@ -109,9 +167,8 @@ while True:
             sys.exit(0)
         # skakanie
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            spacja= True
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            spacja= True
+            spacja=True
+            
     
     """
     keys = pygame.key.get_pressed()
@@ -120,7 +177,7 @@ while True:
     mouse_x, mouse_y = pygame.mouse.get_pos()
     
     #skakanie
-    if spacja==True :
+    if spacja==True:
         delta_v2 += 1
         if(delta_v2 == 30):
             G.reverse()
@@ -136,8 +193,14 @@ while True:
         
     
     win.fill((0,0,0)) #rysowanie  
-    if end == True: end_game()
-    else: rysowanie()
+    
+    if if_start == True:
+        start()
+    else:
+        if end == True: end_game()
+        else: 
+            rysowanie()
+            # if sekunda == 666: nowy_poziom[doom]
     
     
     # print(mouse_x, mouse_y)
