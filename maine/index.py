@@ -1,4 +1,3 @@
-from cmath import log10
 import pygame
 import sys
 import os
@@ -19,8 +18,8 @@ backline = pygame.image.load(path+'backline.png')
 dino_r = []
 dino_r.append(pygame.image.load(path+'dino-right.png'))# 44 x 46
 dino_r.append(pygame.image.load(path+'dino-left.png'))# 44 x 46
-dino_r.append(pygame.transform.scale(pygame.image.load(path+'dino-right-d.png'), (57, 35)))
-dino_r.append(pygame.transform.scale(pygame.image.load(path+'dino-left-d.png'), (57, 35)))
+dino_r.append(pygame.image.load(path+'dino-right-d.png'))
+dino_r.append(pygame.image.load(path+'dino-left-d.png'))
 ptak = []
 ptak.append(pygame.image.load(path+'ptak1.png'))
 ptak.append(pygame.image.load(path+'ptak2.png'))
@@ -30,7 +29,12 @@ for x in range(10):
 liczby.append(pygame.image.load(path+'H.png'))
 liczby.append(pygame.image.load(path+'I.png'))
 kaktus = pygame.image.load(path+'kaktus1.png')
-# pygame.display.set_icon("icon.png")
+icon = pygame.image.load(path+"icon_dino-32x32.png")
+pygame.display.set_icon(icon)
+#sound
+sound = []
+sound.append(pygame.mixer.Sound(path+"sound3.wav"))
+sound.append(pygame.mixer.Sound(path+"sound2.wav"))
 
 
 clock = pygame.time.Clock()
@@ -47,7 +51,9 @@ delta_v2 =0
 dino_rY = 275
 G = [1,1,2,2,2,3,3,3,3,4,4,4,4,4,5,5,5,5,6,6,6,6,6,6,7,7,7,8,8,8,9]
 G.reverse()
-kaktusX = 700
+kaktusX = []
+kaktusX.append(700) # nr 0
+kaktusX.append(1000) # nr 1
 end = False
 if_start = True
 start_p = True
@@ -68,7 +74,8 @@ def start():
         spacja = False
         delta_v2 =0
         dino_rY = 275
-        kaktusX = 700
+        kaktusX[0] = 700
+        kaktusX[1] = 1000
         end = False
         if_start = True
         start_p = False
@@ -89,9 +96,8 @@ def start():
         if_start = False
     
 
-
 def czas():
-    global clock, delta, sekunda, do_10, do_100
+    global clock, delta, sekunda, do_10, do_100, do_1000
     clock.tick(60) # jeszcze zrobie lepsze ?
     delta += 1
     if(delta == 60):
@@ -121,10 +127,14 @@ def rysowanie():
     win.blit(backline, (backlineX, 315))
     
     #random kaktus
-    kaktusX -= 5
-    if(kaktusX <-10):
-        kaktusX = 700
-    win.blit(kaktus, (kaktusX, 272)) # 25x50
+    kaktusX[0] -= 5
+    if(kaktusX[0] <-10):
+        kaktusX[0] = random.randint(650,750) # 650 - 750
+    win.blit(kaktus, (kaktusX[0], 272)) # 25x50 # nr 0
+    kaktusX[1] -= 5
+    if(kaktusX[1] <-10):
+        kaktusX[1] = random.randint(650,750) # 650 - 750
+    win.blit(kaktus, (kaktusX[1], 272)) # 25x50 # nr 0
 
     #dino
     if(delta%6==0):
@@ -136,20 +146,29 @@ def rysowanie():
             w_dino_r +=1
             if(w_dino_r>=2):
                 w_dino_r=0
-    if w_dino_r == 3 or w_dino_r == 4:
-        dulll = dino_rY + 6
+                
+    if w_dino_r == 3 :
+        dulll = dino_rY + 16
+    elif w_dino_r == 2 :
+        dulll = dino_rY + 16
     else: dulll = dino_rY
     win.blit(dino_r[w_dino_r], (30,  dulll)) # 44 x 46
     
     # kolsizja kaktus i dino
-    if (kaktusX > 28 and kaktusX < 52) and (dino_rY < 277 and dino_rY > 238):
+    if (kaktusX[0] > 28 and kaktusX[0] < 52) and (dino_rY < 277 and dino_rY > 238):
+       sound[1].play()
+       end = True # print("kolizja")  ekran końcowy
+    elif (kaktusX[1] > 28 and kaktusX[1] < 52) and (dino_rY < 277 and dino_rY > 238):
+       sound[1].play()
        end = True # print("kolizja")  ekran końcowy
     else:
        end = False
+    
 
 def end_game():
     global end, if_start, start_p, end_l, l1,l2,l3
     win.blit(game_over, (220, 140))
+    
     # scoreboard
     l = 323
     if end_l == False:
@@ -179,6 +198,8 @@ while True:
         # wyjście
         if event.type == pygame.QUIT: 
             sys.exit(0)
+        elif keys[pygame.K_ESCAPE]: 
+            sys.exit(0)
         
     if keys[pygame.K_UP]:
         spacja = True
@@ -195,6 +216,8 @@ while True:
     #skakanie
     if spacja==True:
         delta_v2 += 1
+        if delta_v2 == 1:
+            sound[0].play() 
         if(delta_v2 == 30):
             G.reverse()
         if(delta_v2 <30):
