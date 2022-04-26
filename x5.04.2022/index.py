@@ -1,5 +1,3 @@
-from re import A
-import xlrd
 import pandas as pd
 import matplotlib.pyplot as plt
 
