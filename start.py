@@ -1,7 +1,11 @@
+
+
 from random import randrange # komentaż do random
 import math
 """
 komentaż
+print('\u534D')
+s =input("darv")
 """
 MyGames = ["Gothic", "Tetris", "LoL", "Minecraft", "Stalker", "Asassin"]
 MyFilms = ["Breaking Bad", "Wojny Klonów", "Wiedźmin", "Perfekcyjny Chaos", "Dark"]
